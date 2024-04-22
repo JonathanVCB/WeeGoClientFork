@@ -10,7 +10,7 @@ import {
 import { db } from "../../services/firebaseConfig";
 import { AuthContext } from "../../contexts/UserContext";
 
-const CardStorieSquare = ({ card, doc }: any) => {
+const CardStorieSquareCupom = ({ card, doc }: any) => {
   const { user } = useContext(AuthContext);
 
   async function toggleStatus() {
@@ -45,4 +45,4 @@ const CardStorieSquare = ({ card, doc }: any) => {
   );
 };
 
-export default CardStorieSquare;
+export default CardStorieSquareCupom;

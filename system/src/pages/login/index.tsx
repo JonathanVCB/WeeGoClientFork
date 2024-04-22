@@ -39,6 +39,16 @@ const LoginPage = () => {
     if (userLogin) {
       window.localStorage.setItem("@idUser", userLogin.user.uid);
       window.localStorage.setItem("@emailUser", userLogin.user.email!);
+
+      let email = userLogin.user.email!;
+      // Regex para encontrar a palavra desejada após o último ponto
+      let regex = /[^.]+(?=@)/;
+      // Executando a regex no endereço de e-mail
+      let match = email.match(regex);
+      // A palavra desejada é o resultado do match
+      let shopping = match ? match[0] : null;
+      window.localStorage.setItem("@shopping", shopping!);
+
       toast.success("Logado com Sucesso !");
 
       navigate("/dashboard", { replace: true });
@@ -67,7 +77,9 @@ const LoginPage = () => {
       <img src={capa} alt="Banner" />
       <LoginContainer>
         <img src={logo} alt="logo" />
-        <FormContainer onSubmit={handleSubmit((data) => handleLogin(data))}>
+        <FormContainer
+          onSubmit={handleSubmit((data: any) => handleLogin(data))}
+        >
           <input
             id="email"
             type="email"

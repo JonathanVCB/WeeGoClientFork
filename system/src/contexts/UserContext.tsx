@@ -23,6 +23,7 @@ interface iUserValues {
   user: User | null | undefined;
   NameLoja: string;
   upload: (event: any, album: string) => Promise<void>;
+  shopping: string | null;
 }
 
 export const AuthContext = createContext<iUserValues>({} as iUserValues);
@@ -35,6 +36,7 @@ function AuthProvider({ children }: iUserProviderProps) {
   const navigate = useNavigate();
   const idUser = localStorage.getItem("@idUser");
   const emailUser = localStorage.getItem("@emailUser");
+  const shopping = localStorage.getItem("@shopping");
 
   useEffect(() => {
     if (!loading) {
@@ -53,7 +55,7 @@ function AuthProvider({ children }: iUserProviderProps) {
 
   async function getName() {
     //Métdo para pegar o nome da loja
-    const lojaref = collection(db, "ShoppingTijuca", "lojas", "lojas");
+    const lojaref = collection(db, `${shopping}`, "lojas", "lojas");
     const q = query(lojaref, where("user", "==", `${user?.uid}`));
     let loja: Array<any> = [];
     try {
@@ -109,7 +111,7 @@ function AuthProvider({ children }: iUserProviderProps) {
 
         const firestoreRef = collection(
           db,
-          "ShoppingTijuca",
+          `${shopping}`,
           "lojas",
           "lojas",
           `${user?.uid}`,
@@ -133,6 +135,7 @@ function AuthProvider({ children }: iUserProviderProps) {
         user,
         NameLoja,
         upload,
+        shopping,
       }}
     >
       {children}

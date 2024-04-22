@@ -4,7 +4,7 @@ import {
   ListStories,
   UploadContainer,
 } from "./style";
-import { useUploadFile } from "react-firebase-hooks/storage";
+
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/UserContext";
 
@@ -17,7 +17,7 @@ import ReactCrop, {
 import { canvasPreview } from "../Crop/canvasPreview";
 import { useDebounceEffect } from "../Crop/useDebounceEffect";
 import "react-image-crop/dist/ReactCrop.css";
-import CardStorieSquare from "../cards";
+import CardStorieSquareCupom from "../cards";
 
 function centerAspectCrop(
   mediaWidth: number,
@@ -40,8 +40,6 @@ function centerAspectCrop(
 }
 
 const StorieUpload = ({ stories }: any) => {
-  const [uploadFile, uploading, snapshot, error] = useUploadFile();
-
   const [imgSrc, setImgSrc] = useState("");
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -143,7 +141,7 @@ const StorieUpload = ({ stories }: any) => {
       </FormContainer>
       <ListStories>
         {stories?.map((stories: any) => (
-          <CardStorieSquare
+          <CardStorieSquareCupom
             key={stories.imgUrl}
             card={stories}
             doc={"stories"}

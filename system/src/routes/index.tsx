@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "../pages/login";
 import DashboardPage from "../pages/dashboard";
+import ExampleHeatmap from "../pages/teste";
 
 const MainRoutes = () => {
   return (
@@ -9,6 +10,7 @@ const MainRoutes = () => {
       <Route path="/client" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/teste" element={<ExampleHeatmap />} />
     </Routes>
   );
 };

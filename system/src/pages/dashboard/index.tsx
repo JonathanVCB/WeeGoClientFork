@@ -26,6 +26,7 @@ import LogoUpload from "../../components/logo";
 import ModalUpdatePass from "../../components/modalUpdatePass";
 import { AuthContext } from "../../contexts/UserContext";
 import {
+  Timestamp,
   collection,
   getDocs,
   onSnapshot,
@@ -33,23 +34,31 @@ import {
   where,
 } from "firebase/firestore";
 import Plans from "../../components/plans";
+import CupomUpload from "../../components/cupom";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const [signOut, loading, errors] = useSignOut(auth);
+
   const [StorieShow, setStorieShow] = useState(false);
   const [LogoShow, setLogoShow] = useState(false);
-  const [SquareeShow, setSquareeShow] = useState(false);
+  const [SquareShow, setSquareShow] = useState(false);
+  const [CupomShow, setCupomShow] = useState(false);
 
   const [PlanLoja, setPlanLoja] = useState("");
+
   const [ClassButtonLogo, setClassButtonLogo] = useState("");
   const [ClassButtonSquare, setClassButtonSquare] = useState("");
   const [ClassButtonStorie, setClassButtonStorie] = useState("");
+  const [ClassButtonCupom, setClassButtonCupom] = useState("");
+
   const [planShow, setplanShow] = useState(false);
   const [modalPassword, setModalPassword] = useState(false);
   const [stories, setStories] = useState<Story[]>([]);
   const [squares, setSquares] = useState<Square[]>([]);
-  const { user, NameLoja } = useContext(AuthContext);
+  const [cupons, setCupons] = useState<Cupom[]>([]);
+
+  const { user, NameLoja, shopping } = useContext(AuthContext);
 
   interface Story {
     estaAtivo: boolean;
@@ -63,11 +72,21 @@ const DashboardPage = () => {
     nomeLoja: string;
     user: string;
   }
+  interface Cupom {
+    codigoCupom: string;
+    estaAtivo: boolean;
+    expiracao: Timestamp;
+    nomeLoja: string;
+    tipodesConto: string;
+    user: string;
+    valorCupom: number;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       await getStories();
       await getSquares();
+      await getCupons();
     };
 
     fetchData();
@@ -77,7 +96,7 @@ const DashboardPage = () => {
   async function getStories() {
     const storiesaref = collection(
       db,
-      "ShoppingTijuca",
+      `${shopping}`,
       "lojas",
       `lojas/${user?.uid}/stories`
     );
@@ -95,7 +114,7 @@ const DashboardPage = () => {
   async function getSquares() {
     const squareref = collection(
       db,
-      "ShoppingTijuca",
+      `${shopping}`,
       "lojas",
       `lojas/${user?.uid}/squares`
     );
@@ -110,9 +129,27 @@ const DashboardPage = () => {
     });
   }
 
+  async function getCupons() {
+    const cuponsRef = collection(
+      db,
+      `${shopping}`,
+      "lojas",
+      `lojas/${user?.uid}/cupons`
+    );
+    const qcupons = query(cuponsRef, where("user", "==", `${user?.uid}`));
+    const cupons = onSnapshot(qcupons, (querySnapshot: any) => {
+      let cuponsData: Cupom[] = [];
+      querySnapshot.forEach((doc: any) => {
+        const data = doc.data() as Cupom;
+        cuponsData.push(data);
+      });
+      setCupons(cuponsData);
+    });
+  }
+
   async function getPlan() {
     //Métdo para pegar o tipo de plano da loja
-    const lojaref = collection(db, "ShoppingTijuca", "lojas", "lojas");
+    const lojaref = collection(db, `${shopping}`, "lojas", "lojas");
     const q = query(lojaref, where("user", "==", `${user?.uid}`));
 
     try {
@@ -137,36 +174,54 @@ const DashboardPage = () => {
   function showStorie() {
     setStorieShow(true);
     setLogoShow(false);
-    setSquareeShow(false);
+    setSquareShow(false);
+    setCupomShow(false);
     setClassButtonLogo("");
     setClassButtonSquare("");
     setClassButtonStorie("onFocus");
+    setClassButtonCupom("");
   }
   function showLogo() {
     setStorieShow(false);
     setLogoShow(true);
-    setSquareeShow(false);
+    setSquareShow(false);
+    setCupomShow(false);
     setClassButtonLogo("onFocus");
     setClassButtonSquare("");
     setClassButtonStorie("");
+    setClassButtonCupom("");
   }
   function showSquare() {
     setStorieShow(false);
     setLogoShow(false);
-    setSquareeShow(true);
+    setSquareShow(true);
+    setCupomShow(false);
     setClassButtonLogo("");
     setClassButtonSquare("onFocus");
     setClassButtonStorie("");
+    setClassButtonCupom("");
   }
 
   function showPlans() {
     setClassButtonLogo(`hidden`);
     setClassButtonSquare(`hidden`);
     setClassButtonStorie(`hidden`);
+    setClassButtonCupom("hidden");
     setLogoShow(false);
-    setSquareeShow(false);
+    setSquareShow(false);
     setStorieShow(false);
     setplanShow(true);
+    setCupomShow(false);
+  }
+  function showCupom() {
+    setStorieShow(false);
+    setLogoShow(false);
+    setSquareShow(false);
+    setCupomShow(true);
+    setClassButtonLogo("");
+    setClassButtonSquare("");
+    setClassButtonStorie("");
+    setClassButtonCupom("onFocus");
   }
 
   function showModalPassword() {
@@ -248,6 +303,9 @@ const DashboardPage = () => {
                 <button className={ClassButtonStorie} onClick={showStorie}>
                   Stories
                 </button>
+                <button className={ClassButtonCupom} onClick={showCupom}>
+                  Cupons
+                </button>
               </>
             )}
 
@@ -264,8 +322,9 @@ const DashboardPage = () => {
           </DivOptions>
           {StorieShow && <StorieUpload stories={stories} />}
           {LogoShow && <LogoUpload />}
-          {SquareeShow && <SquareUpload squares={squares} />}
+          {SquareShow && <SquareUpload squares={squares} />}
           {planShow && <Plans planLoja={PlanLoja} />}
+          {CupomShow && <CupomUpload cupons={cupons} />}
         </ContentContainer>
       </PageContainer>
 

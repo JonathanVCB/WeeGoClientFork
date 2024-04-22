@@ -49,7 +49,7 @@ const LogoUpload = () => {
 
   const idUser = localStorage.getItem("@idUser");
   const emailUser = localStorage.getItem("@emailUser");
-  const { user } = useContext(AuthContext);
+  const { user, shopping } = useContext(AuthContext);
 
   //começa aqui
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -179,7 +179,7 @@ const LogoUpload = () => {
         // Atualização da logoUrl
         const firestoreRef = doc(
           db,
-          "ShoppingTijuca",
+          `${shopping}`,
           "lojas",
           "lojas",
           `${user?.uid}`

@@ -4,7 +4,6 @@ import {
   ListSquares,
   UploadContainer,
 } from "./style";
-import { useUploadFile } from "react-firebase-hooks/storage";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/UserContext";
 import React, { useState, useRef } from "react";
@@ -18,7 +17,7 @@ import ReactCrop, {
 import { canvasPreview } from "../Crop/canvasPreview";
 import { useDebounceEffect } from "../Crop/useDebounceEffect";
 import "react-image-crop/dist/ReactCrop.css";
-import CardStorieSquare from "../cards";
+import CardStorieSquareCupom from "../cards";
 
 function centerAspectCrop(
   mediaWidth: number,
@@ -41,8 +40,6 @@ function centerAspectCrop(
 }
 
 const SquareUpload = ({ squares }: any) => {
-  const [uploadFile, uploading, snapshot, error] = useUploadFile();
-
   const [imgSrc, setImgSrc] = useState("");
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -50,9 +47,7 @@ const SquareUpload = ({ squares }: any) => {
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [aspect, setAspect] = useState<number | undefined>(1 / 1);
 
-  const idUser = localStorage.getItem("@idUser");
-  const emailUser = localStorage.getItem("@emailUser");
-  const { user, NameLoja, upload } = useContext(AuthContext);
+  const { upload } = useContext(AuthContext);
 
   //começa aqui
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -146,7 +141,7 @@ const SquareUpload = ({ squares }: any) => {
       </FormContainer>
       <ListSquares>
         {squares?.map((squares: any) => (
-          <CardStorieSquare
+          <CardStorieSquareCupom
             key={squares.imgUrl}
             card={squares}
             doc={"squares"}
