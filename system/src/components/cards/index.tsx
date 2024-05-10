@@ -11,14 +11,14 @@ import { db } from "../../services/firebaseConfig";
 import { AuthContext } from "../../contexts/UserContext";
 
 const CardStorieSquareCupom = ({ card, doc }: any) => {
-  const { user } = useContext(AuthContext);
+  const { user, shopping } = useContext(AuthContext);
 
   async function toggleStatus() {
     try {
       // Encontra o documento no Firebase com a mesma imgUrl
       const storiesRef = collection(
         db,
-        "ShoppingTijuca",
+        `${shopping}`,
         "lojas",
         `lojas/${user?.uid}/${doc}`
       );
